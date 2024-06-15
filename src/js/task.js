@@ -1,6 +1,6 @@
 import { formatInTimeZone, fromZonedTime } from 'date-fns-tz';
 
-const priorities = ['low', 'medium', 'high'];
+const priorities = ['', 'low', 'medium', 'high'];
 
 export default class Task {
     #title;
