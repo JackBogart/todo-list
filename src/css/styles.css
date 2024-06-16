@@ -48,7 +48,7 @@ ul {
     position: relative;
 }
 
-button {
+.project-btn {
     display: flex;
     appearance: none;
     background: none;
@@ -62,7 +62,7 @@ li:first-child button::before {
     width: 24px;
     height: 24px;
     position: absolute;
-    left: 20px;
+    left: 15px;
     background: url(../img/today.svg);
 }
 
@@ -74,4 +74,65 @@ li:first-child button::before {
     padding-left: 10px;
     font-size: 1.5rem;
     font-weight: bold;
+}
+
+.content {
+    padding: 0px 20px;
+}
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: hsl(210, 40%, 96%);
+    margin: 0px 50px 20px 50px;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 3px gray;
+}
+
+.task-right,
+.task-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.clickable-btn {
+    appearance: none;
+    border: none;
+    background: none;
+    width: 24px;
+    height: 24px;
+}
+
+.unchecked {
+    background: url('../img/unchecked-box.svg') no-repeat center center;
+}
+
+.edit {
+    background: url('../img/edit.svg') no-repeat center center;
+}
+
+.delete {
+    background: url('../img/delete.svg') no-repeat center center;
+}
+
+.add {
+    background: url('../img/add.svg') no-repeat center center;
+}
+
+.add-task {
+    background-color: hsl(210, 40%, 96%);
+    margin-right: 50px;
+    padding: 20px;
+    width: 100px;
+    border-radius: 20px;
+    box-shadow: 1px 1px 2px gray;
 }
