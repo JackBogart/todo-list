@@ -1,0 +1,77 @@
+:root {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+        'Open Sans', 'Helvetica Neue', sans-serif;
+}
+html,
+body {
+    height: 100vh;
+    width: 100vw;
+}
+body {
+    display: grid;
+    grid-template: 75px 1fr / 1fr 4fr;
+    grid-template-areas:
+        'header header'
+        'sidebar main-content';
+}
+
+.header {
+    grid-area: header;
+    background-color: #6b21a8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    color: white;
+    font-size: 1.5em;
+}
+
+.sidebar {
+    grid-area: sidebar;
+    background-color: hsl(210, 40%, 96%);
+}
+
+.content {
+    grid-area: main-content;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+}
+
+.project {
+    padding: 20px 0px 20px 40px;
+    position: relative;
+}
+
+button {
+    display: flex;
+    appearance: none;
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    text-align: center;
+}
+
+li:first-child button::before {
+    content: '';
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    left: 20px;
+    background: url(../img/today.svg);
+}
+
+.project:hover {
+    background-color: hsl(210, 40%, 90%);
+}
+
+.project-divider {
+    padding-left: 10px;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
