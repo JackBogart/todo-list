@@ -44,7 +44,6 @@ ul {
 }
 
 .project {
-    padding: 20px 0px 20px 40px;
     position: relative;
 }
 
@@ -55,6 +54,8 @@ ul {
     border: none;
     font-size: 1.3rem;
     text-align: center;
+    padding: 20px 0px 20px 40px;
+    /* width: 100%; */
 }
 
 li:first-child button::before {
@@ -71,13 +72,24 @@ li:first-child button::before {
 }
 
 .project-divider {
+    display: flex;
+    align-items: center;
+    gap: 15px;
     padding-left: 10px;
     font-size: 1.5rem;
     font-weight: bold;
 }
 
+.project-divider > .add {
+    background-color: hsl(210, 40%, 90%);
+    padding: 15px;
+    border-radius: 20px;
+    width: 50px;
+    margin: 10px 0px;
+}
+
 .content {
-    padding: 0px 20px;
+    padding: 0px 30px;
 }
 
 .content-header {
@@ -91,7 +103,7 @@ li:first-child button::before {
     justify-content: space-between;
     align-items: center;
     background-color: hsl(210, 40%, 96%);
-    margin: 0px 50px 20px 50px;
+    margin: 0px 30px 20px 30px;
     padding: 15px;
     border-radius: 5px;
     box-shadow: 2px 2px 3px gray;
@@ -128,11 +140,49 @@ li:first-child button::before {
     background: url('../img/add.svg') no-repeat center center;
 }
 
+.drop-down {
+    background: url('../img/drop-down.svg') no-repeat center center;
+}
+
+.cancel {
+    background: url('../img/close.svg') no-repeat center center;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
 .add-task {
     background-color: hsl(210, 40%, 96%);
-    margin-right: 50px;
+    position: relative;
     padding: 20px;
     width: 100px;
     border-radius: 20px;
     box-shadow: 1px 1px 2px gray;
+}
+
+textarea {
+    resize: none;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+input,
+textarea {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+fieldset {
+    border: none;
+    margin-left: -10px;
+}
+dialog {
+    border: none;
+    background-color: hsl(210, 40%, 96%);
+    border-radius: 10px;
 }

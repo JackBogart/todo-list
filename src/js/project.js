@@ -32,6 +32,7 @@ export default class Project {
     createAndAddTask(title, desc, priority, dueDate) {
         const task = new Task(title, desc, priority, dueDate);
         this.addTask(task);
+        return task;
     }
 
     deleteTask(index) {
