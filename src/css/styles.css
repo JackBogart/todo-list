@@ -39,17 +39,9 @@ ul {
     list-style-type: none;
     margin: 0px;
     padding: 0px;
-    display: flex;
-    flex-direction: column;
 }
 
 .project {
-    position: relative;
-    display: flex;
-    justify-content: flex-start;
-}
-
-.project-btn {
     appearance: none;
     background: none;
     border: none;
@@ -58,15 +50,6 @@ ul {
     padding: 20px 0px 20px 40px;
     width: 100%;
     cursor: pointer;
-}
-
-li:first-child button::before {
-    content: '';
-    width: 24px;
-    height: 24px;
-    position: absolute;
-    left: 15px;
-    background: url(../img/today.svg);
 }
 
 .project:hover {
