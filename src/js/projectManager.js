@@ -10,6 +10,7 @@ export default class ProjectManager {
     createProject(title) {
         const project = new Project(title);
         this.#projects.push(project);
+        return project;
     }
 
     getProject(index) {
@@ -18,5 +19,9 @@ export default class ProjectManager {
 
     deleteProject(index) {
         this.#projects.splice(index, 1);
+    }
+
+    get projects() {
+        return this.#projects;
     }
 }

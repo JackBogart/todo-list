@@ -1,16 +1,17 @@
 export default class View {
-    #header;
+    // #header;
     #sidebar;
     #content;
     #tasks;
-    #taskDialog;
+    // #taskDialog;
 
     constructor() {
-        this.#header = document.querySelector('.header');
         this.#sidebar = document.querySelector('.sidebar');
+        // this.#header = document.querySelector('.header');
+        // this.#sidebar = document.querySelector('.sidebar');
         this.#content = document.querySelector('.content');
         this.#tasks = document.querySelector('.tasks');
-        this.#taskDialog = document.querySelector('.task-form');
+        // this.#taskDialog = document.querySelector('.task-form');
     }
 
     #createTask(task) {
@@ -62,7 +63,22 @@ export default class View {
         this.#tasks.removeChild(task);
     }
 
-    loadProject(project) {
+    createProject(title, index) {
+        const projectEle = document.createElement('li');
+        projectEle.classList.add('project');
+        projectEle.dataset.index = index;
+
+        const projectBtn = document.createElement('button');
+        projectBtn.type = 'button';
+        projectBtn.classList.add('project-btn');
+        projectBtn.textContent = title;
+
+        projectEle.appendChild(projectBtn);
+        document.querySelector('.sidebar > ul').appendChild(projectEle);
+    }
+
+    selectProject(project) {
+        this.#tasks.replaceChildren();
         for (let i = 0; i < project.tasks.length; i++) {
             this.createAndAddTask(project.tasks[i], i);
         }
@@ -70,14 +86,12 @@ export default class View {
         projectName.textContent = project.title;
     }
 
-    bindDeleteTask(handler) {
-        this.#tasks.addEventListener('click', (event) => {
-            if (event.target.classList.contains('delete')) {
-                const taskElement = event.target.closest('.task');
-                if (taskElement) {
-                    const index = taskElement.dataset.index;
-                    handler(index);
-                }
+    bindSelectProject(handler) {
+        this.#sidebar.addEventListener('click', (event) => {
+            if (event.target.classList.contains('project-btn')) {
+                const index = parseInt(event.target.parentElement.dataset.index);
+
+                handler(index);
             }
         });
     }
