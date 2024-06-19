@@ -8,9 +8,10 @@
     <body>
         <dialog class="task-dialog">
             <form action="" class="task-form" method="dialog">
+                <input type="text" id="task-mode" />
                 <div class="form-row">
                     <label for="task-title">Title</label>
-                    <input type="text" maxlength="72" id="task-title" name="title" required />
+                    <input type="text" maxlength="72" id="task-title" name="title" required autofocus />
                 </div>
                 <div class="form-row">
                     <label for="task-desc">Description</label>
@@ -18,7 +19,7 @@
                 </div>
                 <div class="form-row">
                     <label for="task-date">Due Date</label>
-                    <input type="date" id="task-date" name="date" />
+                    <input type="date" id="task-date" name="date" required />
                 </div>
                 <div class="form-row">
                     <label for="task-priority">Priority</label>
@@ -29,11 +30,11 @@
                     </select>
                 </div>
 
-                <button class="task-submit" type="submit">Add Task</button>
+                <button class="task-submit" type="submit">Submit</button>
                 <button class="clickable-btn cancel" value="cancel" type="button"></button>
             </form>
         </dialog>
-        <div class="header"><span class="logo">To-Do List</span><span class="date"></span></div>
+        <div class="header"><span class="logo">To-Do List</span><span class="header-date"></span></div>
         <div class="sidebar">
             <ul>
                 <li>

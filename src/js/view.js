@@ -1,3 +1,6 @@
+import { formatISO } from 'date-fns';
+import { formatInTimeZone } from 'date-fns-tz';
+
 export default class View {
     #sidebar;
     #content;
@@ -6,6 +9,12 @@ export default class View {
     #taskDialog;
     #closeTaskBtn;
     #taskForm;
+    #taskTitle;
+    #taskDesc;
+    #taskPriority;
+    #taskDate;
+    #taskMode;
+    #timeZone;
 
     constructor() {
         this.#sidebar = document.querySelector('.sidebar');
@@ -15,10 +24,12 @@ export default class View {
         this.#closeTaskBtn = document.querySelector('.cancel');
         this.#taskDialog = document.querySelector('.task-dialog');
         this.#taskForm = document.querySelector('.task-form');
-        this.taskTitle = document.querySelector('#task-title');
-        this.taskDesc = document.querySelector('#task-desc');
-        this.taskPriority = document.querySelector('#task-priority');
-        this.taskDate = document.querySelector('#task-date');
+        this.#taskTitle = document.querySelector('#task-title');
+        this.#taskDesc = document.querySelector('#task-desc');
+        this.#taskPriority = document.querySelector('#task-priority');
+        this.#taskDate = document.querySelector('#task-date');
+        this.#taskMode = document.querySelector('#task-mode');
+        this.#timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     }
 
     // Task element functions
@@ -30,7 +41,21 @@ export default class View {
         checkBtn.classList.add('clickable-btn', 'unchecked');
 
         const taskTitle = document.createElement('span');
+        taskTitle.classList.add('title');
         taskTitle.textContent = task.title;
+
+        const taskLeft = document.createElement('div');
+        taskLeft.classList.add('task-left');
+
+        taskLeft.appendChild(checkBtn);
+        taskLeft.appendChild(taskTitle);
+
+        const taskRight = document.createElement('div');
+        taskRight.classList.add('task-right');
+
+        const taskDateEle = document.createElement('span');
+        taskDateEle.classList.add('date');
+        taskDateEle.textContent = this.#formatDateString(task.dueDate);
 
         const editBtn = document.createElement('button');
         editBtn.classList.add('clickable-btn', 'edit');
@@ -41,21 +66,13 @@ export default class View {
         const detailsBtn = document.createElement('button');
         detailsBtn.classList.add('clickable-btn', 'drop-down');
 
-        const taskRight = document.createElement('div');
-        taskRight.classList.add('task-right');
-
+        taskRight.appendChild(taskDateEle);
         taskRight.appendChild(editBtn);
         taskRight.appendChild(deleteBtn);
         taskRight.appendChild(detailsBtn);
 
-        const taskLeft = document.createElement('div');
-        taskLeft.classList.add('task-left');
-
-        taskLeft.appendChild(checkBtn);
-        taskLeft.appendChild(taskTitle);
         taskElement.appendChild(taskLeft);
         taskElement.appendChild(taskRight);
-
         return taskElement;
     }
 
@@ -69,6 +86,16 @@ export default class View {
         });
     }
 
+    #formatDateString(date) {
+        return formatInTimeZone(date, this.#timeZone, 'MMM dd, yyyy');
+    }
+
+    init() {
+        document.querySelector('.header-date').textContent = this.#formatDateString(Date.now());
+
+        this.#taskDate.setAttribute('min', formatISO(Date.now(), { representation: 'date' }));
+    }
+
     createAndAddTask(task, index) {
         const taskElement = this.#createTask(task);
 
@@ -80,6 +107,23 @@ export default class View {
         const task = this.#tasks.querySelector(`.task[data-index="${index}"]`);
         this.#tasks.removeChild(task);
         this.#updateTasksIndices();
+    }
+
+    editTask(task, index) {
+        const taskEle = this.#tasks.querySelector(`.task[data-index="${index}"]`);
+        const taskTitle = taskEle.querySelector('.title');
+        const taskDate = taskEle.querySelector('.date');
+
+        taskTitle.textContent = task.title;
+        taskDate.textContent = this.#formatDateString(task.dueDate);
+    }
+
+    populateTaskDialog(task, index) {
+        this.#taskMode.value = String(index);
+        this.#taskTitle.value = task.title;
+        this.#taskDesc.value = task.desc;
+        this.#taskPriority.value = task.priority;
+        this.#taskDate.value = formatISO(task.dueDate, { representation: 'date' });
     }
 
     // Project element functions
@@ -132,6 +176,16 @@ export default class View {
         this.#addTaskBtn.addEventListener('click', handler);
     }
 
+    bindEditTaskDialog(handler) {
+        this.#tasks.addEventListener('click', (event) => {
+            if (event.target.classList.contains('edit')) {
+                const index = parseInt(event.target.closest('.task').dataset.index);
+
+                handler(index);
+            }
+        });
+    }
+
     bindCloseTaskDialog(handler) {
         this.#closeTaskBtn.addEventListener('click', handler);
     }
@@ -139,10 +193,11 @@ export default class View {
     bindTaskSubmit(handler) {
         this.#taskForm.addEventListener('submit', () => {
             const taskData = {
-                title: this.taskTitle.value,
-                description: this.taskDesc.value,
-                priority: this.taskPriority.value,
-                dueDate: this.taskDate.value,
+                mode: this.#taskMode.value,
+                title: this.#taskTitle.value,
+                description: this.#taskDesc.value,
+                priority: this.#taskPriority.value,
+                dueDate: this.#taskDate.value,
             };
             handler(taskData);
         });

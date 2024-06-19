@@ -18,6 +18,7 @@ export default class Controller {
         this.#view.bindOpenTaskDialog(this.handleOpenTaskDialog.bind(this));
         this.#view.bindCloseTaskDialog(this.handleCloseTaskDialog.bind(this));
         this.#view.bindTaskSubmit(this.handleTaskSubmit.bind(this));
+        this.#view.bindEditTaskDialog(this.handleEditTaskDialog.bind(this));
     }
 
     run() {
@@ -26,32 +27,8 @@ export default class Controller {
 
     #init() {
         this.#createProject('default');
-        this.#currProject.createAndAddTask('Hello world', 'first task', 'high', '2001-07-04');
-        this.#currProject.createAndAddTask(
-            'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aliquid, consectetur odit! Quisquam iste, magnam architecto libero quis officia illum at cumque. Modi, illum! Consectetur iusto veritatis doloribus, est a dolorem?',
-            'first task',
-            'high',
-            '2001-07-04'
-        );
-        this.#currProject.createAndAddTask(
-            'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aliquid, consectetur odit! Quisquam iste, magnam architecto libero quis officia illum at cumque. Modi, illum! Consectetur iusto veritatis doloribus, est a dolorem?',
-            'first task',
-            'high',
-            '2001-07-04'
-        );
-        this.#currProject.createAndAddTask(
-            'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aliquid, consectetur odit! Quisquam iste, magnam architecto libero quis officia illum at cumque. Modi, illum! Consectetur iusto veritatis doloribus, est a dolorem?',
-            'first task',
-            'high',
-            '2001-07-04'
-        );
-
-        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        document.querySelector('.date').textContent = formatInTimeZone(Date.now(), timeZone, 'MMM dd, yyyy');
-
-        this.#createProject('default 2');
-        this.#currProject.createAndAddTask('Hello world 2', 'first task', 'high', '2001-07-04');
         this.#getProject(0);
+        this.#view.init();
     }
 
     #createProject(title) {
@@ -69,6 +46,14 @@ export default class Controller {
         this.#view.deleteTask(index);
     }
 
+    #editTask(taskData) {
+        const editTask = this.#currProject.getTask(taskData.mode);
+        editTask.title = taskData.title;
+        editTask.description = taskData.description;
+        editTask.priority = taskData.priority;
+        editTask.dueDate = taskData.dueDate;
+    }
+
     handleSelectProject(index) {
         this.#getProject(index);
     }
@@ -78,18 +63,28 @@ export default class Controller {
         this.#view.showTaskDialog();
     }
 
+    handleEditTaskDialog(index) {
+        this.#view.populateTaskDialog(this.#currProject.getTask(index), index);
+        this.#view.showTaskDialog();
+    }
+
     handleCloseTaskDialog() {
         this.#view.closeTaskDialog();
     }
 
     handleTaskSubmit(taskData) {
-        const newTask = this.#currProject.createAndAddTask(
-            taskData.title,
-            taskData.description,
-            taskData.priority,
-            taskData.dueDate
-        );
-        this.#view.createAndAddTask(newTask, this.#currProject.tasks.length - 1);
+        if (taskData.mode === '') {
+            const newTask = this.#currProject.createAndAddTask(
+                taskData.title,
+                taskData.description,
+                taskData.priority,
+                taskData.dueDate
+            );
+            this.#view.createAndAddTask(newTask, this.#currProject.tasks.length - 1);
+        } else {
+            this.#editTask(taskData);
+            this.#view.editTask(taskData, taskData.mode);
+        }
     }
 
     handleDeleteTask(index) {
