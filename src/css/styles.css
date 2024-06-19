@@ -155,6 +155,14 @@ textarea {
     margin-bottom: 10px;
 }
 
+#task-date {
+    width: min-content;
+}
+
+select {
+    width: min-content;
+}
+
 input,
 textarea {
     border: 1px solid black;
@@ -162,10 +170,6 @@ textarea {
     padding: 10px;
 }
 
-fieldset {
-    border: none;
-    margin-left: -10px;
-}
 dialog {
     border: none;
     background-color: hsl(210, 40%, 96%);

@@ -1,17 +1,24 @@
 export default class View {
-    // #header;
     #sidebar;
     #content;
     #tasks;
-    // #taskDialog;
+    #addTaskBtn;
+    #taskDialog;
+    #closeTaskBtn;
+    #taskForm;
 
     constructor() {
         this.#sidebar = document.querySelector('.sidebar');
-        // this.#header = document.querySelector('.header');
-        // this.#sidebar = document.querySelector('.sidebar');
         this.#content = document.querySelector('.content');
         this.#tasks = document.querySelector('.tasks');
-        // this.#taskDialog = document.querySelector('.task-form');
+        this.#addTaskBtn = document.querySelector('.add-task');
+        this.#closeTaskBtn = document.querySelector('.cancel');
+        this.#taskDialog = document.querySelector('.task-dialog');
+        this.#taskForm = document.querySelector('.task-form');
+        this.taskTitle = document.querySelector('#task-title');
+        this.taskDesc = document.querySelector('#task-desc');
+        this.taskPriority = document.querySelector('#task-priority');
+        this.taskDate = document.querySelector('#task-date');
     }
 
     // Task element functions
@@ -52,6 +59,16 @@ export default class View {
         return taskElement;
     }
 
+    #updateTasksIndices() {
+        const tasks = this.#tasks.querySelectorAll('.task');
+
+        let i = 0;
+        tasks.forEach((task) => {
+            task.dataset.index = i;
+            i++;
+        });
+    }
+
     createAndAddTask(task, index) {
         const taskElement = this.#createTask(task);
 
@@ -62,6 +79,7 @@ export default class View {
     deleteTask(index) {
         const task = this.#tasks.querySelector(`.task[data-index="${index}"]`);
         this.#tasks.removeChild(task);
+        this.#updateTasksIndices();
     }
 
     // Project element functions
@@ -87,6 +105,18 @@ export default class View {
         projectName.textContent = project.title;
     }
 
+    showTaskDialog() {
+        this.#taskDialog.showModal();
+    }
+
+    closeTaskDialog() {
+        this.#taskDialog.close();
+    }
+
+    clearTaskForm() {
+        this.#taskForm.reset();
+    }
+
     // Binders for events to handlers in controller
     bindSelectProject(handler) {
         this.#sidebar.addEventListener('click', (event) => {
@@ -95,6 +125,26 @@ export default class View {
 
                 handler(index);
             }
+        });
+    }
+
+    bindOpenTaskDialog(handler) {
+        this.#addTaskBtn.addEventListener('click', handler);
+    }
+
+    bindCloseTaskDialog(handler) {
+        this.#closeTaskBtn.addEventListener('click', handler);
+    }
+
+    bindTaskSubmit(handler) {
+        this.#taskForm.addEventListener('submit', () => {
+            const taskData = {
+                title: this.taskTitle.value,
+                description: this.taskDesc.value,
+                priority: this.taskPriority.value,
+                dueDate: this.taskDate.value,
+            };
+            handler(taskData);
         });
     }
 

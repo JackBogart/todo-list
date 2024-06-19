@@ -13,8 +13,11 @@ export default class Controller {
         this.#projectManager = new ProjectManager();
         this.#view = new View();
 
-        this.#view.bindSelectProject(this.handleSelectProject);
-        this.#view.bindDeleteTask(this.handleDeleteTask);
+        this.#view.bindSelectProject(this.handleSelectProject.bind(this));
+        this.#view.bindDeleteTask(this.handleDeleteTask.bind(this));
+        this.#view.bindOpenTaskDialog(this.handleOpenTaskDialog.bind(this));
+        this.#view.bindCloseTaskDialog(this.handleCloseTaskDialog.bind(this));
+        this.#view.bindTaskSubmit(this.handleTaskSubmit.bind(this));
     }
 
     run() {
@@ -66,11 +69,30 @@ export default class Controller {
         this.#view.deleteTask(index);
     }
 
-    handleSelectProject = (index) => {
+    handleSelectProject(index) {
         this.#getProject(index);
-    };
+    }
 
-    handleDeleteTask = (index) => {
+    handleOpenTaskDialog() {
+        this.#view.clearTaskForm();
+        this.#view.showTaskDialog();
+    }
+
+    handleCloseTaskDialog() {
+        this.#view.closeTaskDialog();
+    }
+
+    handleTaskSubmit(taskData) {
+        const newTask = this.#currProject.createAndAddTask(
+            taskData.title,
+            taskData.description,
+            taskData.priority,
+            taskData.dueDate
+        );
+        this.#view.createAndAddTask(newTask, this.#currProject.tasks.length - 1);
+    }
+
+    handleDeleteTask(index) {
         this.#deleteTask(index);
-    };
+    }
 }
