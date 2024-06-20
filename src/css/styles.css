@@ -177,6 +177,18 @@ ul {
     background: url('../img/unchecked-box.svg') no-repeat center center;
 }
 
+.checked {
+    background: url('../img/checked-box.svg') no-repeat center center;
+}
+
+.task:has(.checked) {
+    color: gray;
+}
+
+.task:has(.checked) .title {
+    text-decoration: line-through;
+}
+
 .edit {
     background: url('../img/edit.svg') no-repeat center center;
 }

@@ -51,7 +51,7 @@ export default class View {
         taskMinimized.classList.add('task-min');
 
         const checkBtn = document.createElement('button');
-        checkBtn.classList.add('clickable-btn', 'unchecked');
+        checkBtn.classList.add('clickable-btn', `${task.completed ? 'checked' : 'unchecked'}`);
 
         const taskTitle = document.createElement('span');
         taskTitle.classList.add('title');
@@ -173,14 +173,20 @@ export default class View {
         }
     }
 
-    hideTaskDetails(index) {
+    toggleTaskCompleteMarker(index) {
         const taskEle = this.#tasks.querySelector(`.task[data-index="${index}"]`);
-        const taskDetailsBtn = taskEle.querySelector('.drop-up');
-        const taskDetails = taskEle.querySelector('.task-details');
+        const taskCompleteMarker =
+            taskEle.querySelector('.unchecked') === null
+                ? taskEle.querySelector('.checked')
+                : taskEle.querySelector('.unchecked');
 
-        taskDetailsBtn.classList.remove('drop-up');
-        taskDetailsBtn.classList.add('drop-down');
-        taskDetails.style.display = 'none';
+        if (taskCompleteMarker.classList.contains('unchecked')) {
+            taskCompleteMarker.classList.remove('unchecked');
+            taskCompleteMarker.classList.add('checked');
+        } else {
+            taskCompleteMarker.classList.remove('checked');
+            taskCompleteMarker.classList.add('unchecked');
+        }
     }
 
     populateTaskDialog(task, index) {
@@ -281,6 +287,16 @@ export default class View {
     bindToggleTaskDetails(handler) {
         this.#tasks.addEventListener('click', (event) => {
             if (event.target.classList.contains('drop-down') || event.target.classList.contains('drop-up')) {
+                const index = parseInt(event.target.closest('.task').dataset.index);
+
+                handler(index);
+            }
+        });
+    }
+
+    bindToggleTaskCompleteMarker(handler) {
+        this.#tasks.addEventListener('click', (event) => {
+            if (event.target.classList.contains('unchecked') || event.target.classList.contains('checked')) {
                 const index = parseInt(event.target.closest('.task').dataset.index);
 
                 handler(index);

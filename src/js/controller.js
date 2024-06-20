@@ -18,6 +18,7 @@ export default class Controller {
         this.#view.bindTaskSubmit(this.handleTaskSubmit.bind(this));
         this.#view.bindEditTaskDialog(this.handleEditTaskDialog.bind(this));
         this.#view.bindToggleTaskDetails(this.handleToggleTaskDetails.bind(this));
+        this.#view.bindToggleTaskCompleteMarker(this.handleToggleCompleteMarker.bind(this));
     }
 
     run() {
@@ -89,5 +90,10 @@ export default class Controller {
 
     handleToggleTaskDetails(index) {
         this.#view.toggleTaskDetails(index);
+    }
+
+    handleToggleCompleteMarker(index) {
+        this.#currProject.getTask(index).toggleCompleted();
+        this.#view.toggleTaskCompleteMarker(index);
     }
 }
