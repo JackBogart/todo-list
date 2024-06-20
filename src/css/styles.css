@@ -46,6 +46,7 @@ ul {
 }
 
 .project {
+    position: relative;
     appearance: none;
     background: none;
     border: none;
@@ -71,6 +72,19 @@ ul {
     padding-left: 10px;
     font-size: 1.5rem;
     font-weight: bold;
+}
+
+.project-controls{
+    position:absolute;
+    display:none;
+    gap:10px;
+    right:10px;
+    top:30%;
+    z-index: 1;
+}
+
+li:hover .project-controls{
+    display: flex;
 }
 
 .project-divider > .add {
@@ -166,6 +180,7 @@ ul {
     flex: none;
     width: 24px;
     height: 24px;
+    cursor: pointer;
 }
 
 .unchecked {
@@ -229,7 +244,8 @@ button {
     box-sizing: border-box;
 }
 
-#task-mode {
+#task-mode,
+#project-mode {
     display: none;
 }
 

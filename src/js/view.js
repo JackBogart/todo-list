@@ -40,7 +40,7 @@ export default class View {
         this.#projectForm = document.querySelector('.project-form');
         this.#projectTitle = document.querySelector('#project-title');
         this.#closeProjectBtn = document.querySelector('.project-cancel');
-        this.#projectMode = document.querySelector('.project-submit');
+        this.#projectMode = document.querySelector('#project-mode');
         this.#projectName = document.querySelector('.project-name');
     }
 
@@ -209,6 +209,11 @@ export default class View {
         this.#taskDate.value = formatISO(task.dueDate, { representation: 'date' });
     }
 
+    populateProjectDialog(project, index){
+        this.#projectMode.value = String(index);
+        this.#projectTitle.value = project.title;
+    }
+
     // Project element functions
     createProject(title, index) {
         const projectEle = document.createElement('li');
@@ -216,9 +221,25 @@ export default class View {
         const projectBtn = document.createElement('button');
         projectBtn.type = 'button';
         projectBtn.classList.add('project');
-        projectBtn.textContent = title;
         projectBtn.dataset.index = index;
 
+        const projectTitle = document.createElement('div')
+        projectTitle.textContent = title;
+
+        const projectControls = document.createElement('div');
+        projectControls.classList.add('project-controls')
+
+        const editBtn = document.createElement('button');
+        editBtn.classList.add('clickable-btn', 'edit');
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.classList.add('clickable-btn', 'delete');
+
+        projectControls.appendChild(editBtn);
+        projectControls.appendChild(deleteBtn);
+        
+        projectBtn.append(projectTitle);
+        projectBtn.appendChild(projectControls);
         projectEle.appendChild(projectBtn);
         document.querySelector('.sidebar > ul').appendChild(projectEle);
     }
@@ -236,6 +257,16 @@ export default class View {
         }
         const projectTab = document.querySelector(`.project[data-index="${index}"]`);
         projectTab.classList.add('active');
+    }
+
+    editProject(project) {
+        const projectEle = this.#sidebar.querySelector(`.project[data-index="${project.mode}"]`);
+        const projectTitle = projectEle.querySelector('div');
+        projectTitle.textContent = project.title;
+
+        if(projectEle.classList.contains('active')){
+            this.#projectName.textContent = project.title;
+        }
     }
 
     showTaskDialog() {
@@ -266,7 +297,7 @@ export default class View {
     bindSelectProject(handler) {
         this.#sidebar.addEventListener('click', (event) => {
             if (event.target.classList.contains('project')) {
-                const index = parseInt(event.target.dataset.index);
+                const index = parseInt(event.target.closest('.project').dataset.index);
 
                 handler(index);
             }
@@ -349,6 +380,16 @@ export default class View {
                 title: this.#projectTitle.value,
             };
             handler(projectData);
+        });
+    }
+
+    bindEditProjectDialog(handler) {
+        this.#sidebar.addEventListener('click', (event) => {
+            if (event.target.classList.contains('edit')) {
+                const index = parseInt(event.target.closest('.project').dataset.index);
+
+                handler(index);
+            }
         });
     }
 }

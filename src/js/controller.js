@@ -22,6 +22,7 @@ export default class Controller {
         this.#view.bindOpenProjectDialog(this.handleOpenProjectDialog.bind(this));
         this.#view.bindCloseProjectDialog(this.handleCloseProjectDialog.bind(this));
         this.#view.bindProjectSubmit(this.handleProjectSubmit.bind(this));
+        this.#view.bindEditProjectDialog(this.handleEditProjectDialog.bind(this))
     }
 
     run() {
@@ -51,6 +52,12 @@ export default class Controller {
         editTask.desc = taskData.description;
         editTask.priority = taskData.priority;
         editTask.dueDate = taskData.dueDate;
+    }
+
+    #editProject(projectData) {
+        const editProject = this.#projectManager.getProject(projectData.mode);
+        editProject.title = projectData.title;
+
     }
 
     handleSelectProject(index) {
@@ -85,10 +92,15 @@ export default class Controller {
             this.#projectManager.createProject(projectData.title);
             this.#view.createProject(projectData.title, this.#projectManager.projects.length - 1);
         }
-        // else {
-        //     this.#editTask(taskData);
-        //     this.#view.editTask(taskData);
-        // }
+        else {
+            this.#editProject(projectData);
+            this.#view.editProject(projectData);
+        }
+    }
+
+    handleEditProjectDialog(index){
+        this.#view.populateProjectDialog(this.#projectManager.getProject(index), index);
+        this.#view.showProjectDialog();
     }
 
     handleTaskSubmit(taskData) {
