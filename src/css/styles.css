@@ -92,31 +92,22 @@ ul {
 }
 
 .task {
-    position: relative;
     background-color: hsl(210, 40%, 96%);
     margin: 0px 30px 20px 30px;
     border-radius: 5px;
     box-shadow: 2px 2px 3px gray;
 }
 
-.task::before {
-    content: '';
-    position: absolute;
-    border-radius: 5px 0px 0px 5px;
-    width: 10px;
-    height: 100%;
+.task:has(.low) {
+    border-left: 10px solid var(--low-priority);
 }
 
-.task:has(.low)::before {
-    background-color: var(--low-priority);
+.task:has(.medium) {
+    border-left: 10px solid var(--medium-priority);
 }
 
-.task:has(.medium)::before {
-    background-color: var(--medium-priority);
-}
-
-.task:has(.high)::before {
-    background-color: var(--high-priority);
+.task:has(.high) {
+    border-left: 10px solid var(--high-priority);
 }
 
 .task-min {
