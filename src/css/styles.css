@@ -56,7 +56,11 @@ ul {
     cursor: pointer;
 }
 
-.project:hover {
+.project:not(:active):hover {
+    background-color: hsl(210, 40%, 90%);
+}
+
+.project.active {
     background-color: hsl(210, 40%, 90%);
 }
 
@@ -252,13 +256,17 @@ textarea {
     width: min-content;
 }
 
-.task-submit {
+.submit {
     appearance: none;
     border: none;
     color: white;
     background-color: var(--primary-purple);
     border-radius: 15px;
     padding: 5px 20px;
+}
+
+.project-dialog {
+    width: 25%;
 }
 
 select {

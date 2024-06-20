@@ -3,7 +3,6 @@ import { formatInTimeZone } from 'date-fns-tz';
 
 export default class View {
     #sidebar;
-    #content;
     #tasks;
     #addTaskBtn;
     #taskDialog;
@@ -15,13 +14,19 @@ export default class View {
     #taskDate;
     #taskMode;
     #timeZone;
+    #addProjectBtn;
+    #projectDialog;
+    #projectForm;
+    #projectTitle;
+    #closeProjectBtn;
+    #projectMode;
+    #projectName;
 
     constructor() {
         this.#sidebar = document.querySelector('.sidebar');
-        this.#content = document.querySelector('.content');
         this.#tasks = document.querySelector('.tasks');
         this.#addTaskBtn = document.querySelector('.add-task');
-        this.#closeTaskBtn = document.querySelector('.cancel');
+        this.#closeTaskBtn = document.querySelector('.task-cancel');
         this.#taskDialog = document.querySelector('.task-dialog');
         this.#taskForm = document.querySelector('.task-form');
         this.#taskTitle = document.querySelector('#task-title');
@@ -30,6 +35,13 @@ export default class View {
         this.#taskDate = document.querySelector('#task-date');
         this.#taskMode = document.querySelector('#task-mode');
         this.#timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        this.#addProjectBtn = document.querySelector('.add-project');
+        this.#projectDialog = document.querySelector('.project-dialog');
+        this.#projectForm = document.querySelector('.project-form');
+        this.#projectTitle = document.querySelector('#project-title');
+        this.#closeProjectBtn = document.querySelector('.project-cancel');
+        this.#projectMode = document.querySelector('.project-submit');
+        this.#projectName = document.querySelector('.project-name');
     }
 
     // Task element functions
@@ -211,13 +223,19 @@ export default class View {
         document.querySelector('.sidebar > ul').appendChild(projectEle);
     }
 
-    getProject(project) {
+    getProject(project, index) {
         this.#tasks.replaceChildren();
         for (let i = 0; i < project.tasks.length; i++) {
             this.createAndAddTask(project.tasks[i], i);
         }
-        const projectName = this.#content.querySelector('.project-name');
-        projectName.textContent = project.title;
+        this.#projectName.textContent = project.title;
+
+        const activeProject = document.querySelector('.active');
+        if (activeProject !== null) {
+            activeProject.classList.remove('active');
+        }
+        const projectTab = document.querySelector(`.project[data-index="${index}"]`);
+        projectTab.classList.add('active');
     }
 
     showTaskDialog() {
@@ -230,6 +248,18 @@ export default class View {
 
     clearTaskForm() {
         this.#taskForm.reset();
+    }
+
+    showProjectDialog() {
+        this.#projectDialog.showModal();
+    }
+
+    closeProjectDialog() {
+        this.#projectDialog.close();
+    }
+
+    clearProjectForm() {
+        this.#projectForm.reset();
     }
 
     // Binders for events to handlers in controller
@@ -301,6 +331,24 @@ export default class View {
 
                 handler(index);
             }
+        });
+    }
+
+    bindOpenProjectDialog(handler) {
+        this.#addProjectBtn.addEventListener('click', handler);
+    }
+
+    bindCloseProjectDialog(handler) {
+        this.#closeProjectBtn.addEventListener('click', handler);
+    }
+
+    bindProjectSubmit(handler) {
+        this.#projectForm.addEventListener('submit', () => {
+            const projectData = {
+                mode: this.#projectMode.value,
+                title: this.#projectTitle.value,
+            };
+            handler(projectData);
         });
     }
 }

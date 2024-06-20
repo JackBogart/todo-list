@@ -19,6 +19,9 @@ export default class Controller {
         this.#view.bindEditTaskDialog(this.handleEditTaskDialog.bind(this));
         this.#view.bindToggleTaskDetails(this.handleToggleTaskDetails.bind(this));
         this.#view.bindToggleTaskCompleteMarker(this.handleToggleCompleteMarker.bind(this));
+        this.#view.bindOpenProjectDialog(this.handleOpenProjectDialog.bind(this));
+        this.#view.bindCloseProjectDialog(this.handleCloseProjectDialog.bind(this));
+        this.#view.bindProjectSubmit(this.handleProjectSubmit.bind(this));
     }
 
     run() {
@@ -39,7 +42,7 @@ export default class Controller {
 
     #selectProject(index) {
         this.#currProject = this.#projectManager.getProject(index);
-        this.#view.getProject(this.#currProject);
+        this.#view.getProject(this.#currProject, index);
     }
 
     #editTask(taskData) {
@@ -66,6 +69,26 @@ export default class Controller {
 
     handleCloseTaskDialog() {
         this.#view.closeTaskDialog();
+    }
+
+    handleOpenProjectDialog() {
+        this.#view.clearProjectForm();
+        this.#view.showProjectDialog();
+    }
+
+    handleCloseProjectDialog() {
+        this.#view.closeProjectDialog();
+    }
+
+    handleProjectSubmit(projectData) {
+        if (projectData.mode === '') {
+            this.#projectManager.createProject(projectData.title);
+            this.#view.createProject(projectData.title, this.#projectManager.projects.length - 1);
+        }
+        // else {
+        //     this.#editTask(taskData);
+        //     this.#view.editTask(taskData);
+        // }
     }
 
     handleTaskSubmit(taskData) {
