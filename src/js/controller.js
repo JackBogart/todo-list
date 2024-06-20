@@ -1,5 +1,3 @@
-import { formatInTimeZone } from 'date-fns-tz';
-
 import ProjectManager from './projectManager';
 import View from './view';
 
@@ -19,6 +17,7 @@ export default class Controller {
         this.#view.bindCloseTaskDialog(this.handleCloseTaskDialog.bind(this));
         this.#view.bindTaskSubmit(this.handleTaskSubmit.bind(this));
         this.#view.bindEditTaskDialog(this.handleEditTaskDialog.bind(this));
+        this.#view.bindToggleTaskDetails(this.handleToggleTaskDetails.bind(this));
     }
 
     run() {
@@ -26,9 +25,10 @@ export default class Controller {
     }
 
     #init() {
-        this.#createProject('default');
-        this.#getProject(0);
         this.#view.init();
+        this.#createProject('default');
+        this.#currProject.createAndAddTask('Hello world', 'Example desc', 'low', '2024-06-22');
+        this.#selectProject(0);
     }
 
     #createProject(title) {
@@ -36,26 +36,21 @@ export default class Controller {
         this.#view.createProject(title, this.#projectManager.projects.length - 1);
     }
 
-    #getProject(index) {
+    #selectProject(index) {
         this.#currProject = this.#projectManager.getProject(index);
         this.#view.getProject(this.#currProject);
-    }
-
-    #deleteTask(index) {
-        this.#currProject.deleteTask(index);
-        this.#view.deleteTask(index);
     }
 
     #editTask(taskData) {
         const editTask = this.#currProject.getTask(taskData.mode);
         editTask.title = taskData.title;
-        editTask.description = taskData.description;
+        editTask.desc = taskData.description;
         editTask.priority = taskData.priority;
         editTask.dueDate = taskData.dueDate;
     }
 
     handleSelectProject(index) {
-        this.#getProject(index);
+        this.#selectProject(index);
     }
 
     handleOpenTaskDialog() {
@@ -83,11 +78,16 @@ export default class Controller {
             this.#view.createAndAddTask(newTask, this.#currProject.tasks.length - 1);
         } else {
             this.#editTask(taskData);
-            this.#view.editTask(taskData, taskData.mode);
+            this.#view.editTask(taskData);
         }
     }
 
     handleDeleteTask(index) {
-        this.#deleteTask(index);
+        this.#currProject.deleteTask(index);
+        this.#view.deleteTask(index);
+    }
+
+    handleToggleTaskDetails(index) {
+        this.#view.toggleTaskDetails(index);
     }
 }

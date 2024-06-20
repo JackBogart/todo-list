@@ -2,6 +2,9 @@
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
         'Open Sans', 'Helvetica Neue', sans-serif;
     --primary-purple: hsl(273, 67%, 39%);
+    --low-priority: hsl(142, 69%, 58%);
+    --medium-priority: hsl(48, 96%, 53%);
+    --high-priority: hsl(0, 91%, 71%);
 }
 html,
 body {
@@ -85,14 +88,73 @@ ul {
 }
 
 .task {
+    position: relative;
+    background-color: hsl(210, 40%, 96%);
+    margin: 0px 30px 20px 30px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 3px gray;
+}
+
+.task::before {
+    content: '';
+    position: absolute;
+    border-radius: 5px 0px 0px 5px;
+    width: 10px;
+    height: 100%;
+}
+
+.task:has(.low)::before {
+    background-color: var(--low-priority);
+}
+
+.task:has(.medium)::before {
+    background-color: var(--medium-priority);
+}
+
+.task:has(.high)::before {
+    background-color: var(--high-priority);
+}
+
+.task-min {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: hsl(210, 40%, 96%);
-    margin: 0px 30px 20px 30px;
     padding: 15px;
-    border-radius: 5px;
-    box-shadow: 2px 2px 3px gray;
+}
+
+.task-min .title {
+    font-weight: bold;
+}
+
+.task-details {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 15px 0px 15px 59px;
+}
+
+.task-details > p {
+    margin: 0px;
+    padding: 0px;
+    word-break: break-word;
+}
+
+.priority {
+    padding: 5px 15px;
+    border-radius: 20px;
+}
+
+.low {
+    background-color: var(--low-priority);
+}
+
+.medium {
+    background-color: var(--medium-priority);
+}
+
+.high {
+    background-color: var(--high-priority);
 }
 
 .task-right,
@@ -106,6 +168,7 @@ ul {
     appearance: none;
     border: none;
     background: none;
+    flex: none;
     width: 24px;
     height: 24px;
 }
@@ -128,6 +191,10 @@ ul {
 
 .drop-down {
     background: url('../img/drop-down.svg') no-repeat center center;
+}
+
+.drop-up {
+    background: url('../img/drop-up.svg') no-repeat center center;
 }
 
 .cancel {

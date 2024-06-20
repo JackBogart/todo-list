@@ -37,6 +37,19 @@ export default class View {
         const taskElement = document.createElement('div');
         taskElement.classList.add('task');
 
+        const taskMinimized = this.#createTaskMinimized(task);
+        const taskDetails = this.#createTaskDetails(task);
+
+        taskElement.appendChild(taskMinimized);
+        taskElement.appendChild(taskDetails);
+
+        return taskElement;
+    }
+
+    #createTaskMinimized(task) {
+        const taskMinimized = document.createElement('div');
+        taskMinimized.classList.add('task-min');
+
         const checkBtn = document.createElement('button');
         checkBtn.classList.add('clickable-btn', 'unchecked');
 
@@ -71,9 +84,27 @@ export default class View {
         taskRight.appendChild(deleteBtn);
         taskRight.appendChild(detailsBtn);
 
-        taskElement.appendChild(taskLeft);
-        taskElement.appendChild(taskRight);
-        return taskElement;
+        taskMinimized.appendChild(taskLeft);
+        taskMinimized.appendChild(taskRight);
+
+        return taskMinimized;
+    }
+
+    #createTaskDetails(task) {
+        const taskDetails = document.createElement('div');
+        taskDetails.classList.add('task-details');
+
+        const taskDescription = document.createElement('p');
+        taskDescription.textContent = task.desc;
+
+        const taskPriority = document.createElement('div');
+        taskPriority.textContent = task.priority;
+        taskPriority.classList.add(`${task.priority}`, 'priority');
+
+        taskDetails.appendChild(taskDescription);
+        taskDetails.appendChild(taskPriority);
+
+        return taskDetails;
     }
 
     #updateTasksIndices() {
@@ -109,13 +140,47 @@ export default class View {
         this.#updateTasksIndices();
     }
 
-    editTask(task, index) {
-        const taskEle = this.#tasks.querySelector(`.task[data-index="${index}"]`);
+    editTask(task) {
+        const taskEle = this.#tasks.querySelector(`.task[data-index="${task.mode}"]`);
         const taskTitle = taskEle.querySelector('.title');
         const taskDate = taskEle.querySelector('.date');
+        const taskDescription = taskEle.querySelector('p');
+        const taskPriority = taskEle.querySelector('.priority');
 
         taskTitle.textContent = task.title;
         taskDate.textContent = this.#formatDateString(task.dueDate);
+        taskDescription.textContent = task.description;
+        taskPriority.classList = `priority ${task.priority}`;
+        taskPriority.textContent = task.priority;
+    }
+
+    toggleTaskDetails(index) {
+        const taskEle = this.#tasks.querySelector(`.task[data-index="${index}"]`);
+        const taskDetailsBtn =
+            taskEle.querySelector('.drop-down') === null
+                ? taskEle.querySelector('.drop-up')
+                : taskEle.querySelector('.drop-down');
+        const taskDetails = taskEle.querySelector('.task-details');
+
+        if (taskDetailsBtn.classList.contains('drop-down')) {
+            taskDetailsBtn.classList.remove('drop-down');
+            taskDetailsBtn.classList.add('drop-up');
+            taskDetails.style.display = 'flex';
+        } else {
+            taskDetailsBtn.classList.remove('drop-up');
+            taskDetailsBtn.classList.add('drop-down');
+            taskDetails.style.display = 'none';
+        }
+    }
+
+    hideTaskDetails(index) {
+        const taskEle = this.#tasks.querySelector(`.task[data-index="${index}"]`);
+        const taskDetailsBtn = taskEle.querySelector('.drop-up');
+        const taskDetails = taskEle.querySelector('.task-details');
+
+        taskDetailsBtn.classList.remove('drop-up');
+        taskDetailsBtn.classList.add('drop-down');
+        taskDetails.style.display = 'none';
     }
 
     populateTaskDialog(task, index) {
@@ -206,6 +271,16 @@ export default class View {
     bindDeleteTask(handler) {
         this.#tasks.addEventListener('click', (event) => {
             if (event.target.classList.contains('delete')) {
+                const index = parseInt(event.target.closest('.task').dataset.index);
+
+                handler(index);
+            }
+        });
+    }
+
+    bindToggleTaskDetails(handler) {
+        this.#tasks.addEventListener('click', (event) => {
+            if (event.target.classList.contains('drop-down') || event.target.classList.contains('drop-up')) {
                 const index = parseInt(event.target.closest('.task').dataset.index);
 
                 handler(index);
