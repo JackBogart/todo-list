@@ -129,6 +129,16 @@ export default class View {
         });
     }
 
+    #updateProjectIndices() {
+        const tasks = this.#sidebar.querySelectorAll('.project:not(.today)');
+
+        let i = 0;
+        tasks.forEach((task) => {
+            task.dataset.index = i;
+            i++;
+        });
+    }
+
     #formatDateString(date) {
         return formatInTimeZone(date, this.#timeZone, 'MMM dd, yyyy');
     }
@@ -248,6 +258,7 @@ export default class View {
             this.createAndAddTask(project.tasks[i], i);
         }
         this.#projectName.textContent = project.title;
+        this.#addTaskBtn.classList.remove('hide-task-btn');
 
         const activeProject = document.querySelector('.active');
         if (activeProject !== null) {
@@ -267,8 +278,23 @@ export default class View {
         }
     }
 
+    deleteProject(index) {
+        const projectEle = this.#sidebar.querySelector(`.project[data-index="${index}"]`);
+        const activeProject = document.querySelector('.active');
+        if (activeProject === projectEle) {
+            this.#projectName.textContent = '';
+            this.#addTaskBtn.classList.add('hide-task-btn');
+        }
+        projectEle.remove();
+        this.#tasks.replaceChildren();
+        this.#updateProjectIndices();
+    }
+
     showTaskDialog() {
-        this.#taskDialog.showModal();
+        const activeProject = document.querySelector('.active');
+        if (activeProject !== null) {
+            this.#taskDialog.showModal();
+        }
     }
 
     closeTaskDialog() {
@@ -384,6 +410,16 @@ export default class View {
     bindEditProjectDialog(handler) {
         this.#sidebar.addEventListener('click', (event) => {
             if (event.target.classList.contains('edit')) {
+                const index = parseInt(event.target.closest('.project').dataset.index);
+
+                handler(index);
+            }
+        });
+    }
+
+    bindDeleteProject(handler) {
+        this.#sidebar.addEventListener('click', (event) => {
+            if (event.target.classList.contains('delete')) {
                 const index = parseInt(event.target.closest('.project').dataset.index);
 
                 handler(index);

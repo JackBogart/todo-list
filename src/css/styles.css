@@ -50,13 +50,16 @@ ul {
     border: none;
 }
 
+button {
+    cursor: pointer;
+}
+
 .project > button {
     background-color: transparent;
     border: none;
-    cursor: pointer;
     font-size: 1.3rem;
     appearance: none;
-    padding: 20px 68px 20px 40px;
+    padding: 20px 70px 20px 40px;
     width: 100%;
     text-align: left;
 }
@@ -107,6 +110,7 @@ li:hover .project-controls {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 100px;
 }
 
 .task {
@@ -182,9 +186,17 @@ li:hover .project-controls {
     border: none;
     background: none;
     flex: none;
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
+    width: 25px;
+    height: 25px;
+    border-radius: 5px;
+}
+
+li .clickable-btn:hover:not(:active) {
+    background-color: hsl(210, 40%, 85%);
+}
+
+.task .clickable-btn:hover:not(:active) {
+    background-color: hsl(210, 40%, 90%);
 }
 
 .unchecked {
@@ -237,6 +249,14 @@ li:hover .project-controls {
     width: 100px;
     border-radius: 20px;
     box-shadow: 1px 1px 2px gray;
+}
+
+.add-task:not(:active):hover {
+    background-color: hsl(210, 40%, 90%);
+}
+
+.hide-task-btn {
+    display: none;
 }
 
 input,

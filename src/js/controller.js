@@ -22,7 +22,8 @@ export default class Controller {
         this.#view.bindOpenProjectDialog(this.handleOpenProjectDialog.bind(this));
         this.#view.bindCloseProjectDialog(this.handleCloseProjectDialog.bind(this));
         this.#view.bindProjectSubmit(this.handleProjectSubmit.bind(this));
-        this.#view.bindEditProjectDialog(this.handleEditProjectDialog.bind(this))
+        this.#view.bindEditProjectDialog(this.handleEditProjectDialog.bind(this));
+        this.#view.bindDeleteProject(this.handleDeleteProject.bind(this));
     }
 
     run() {
@@ -57,7 +58,6 @@ export default class Controller {
     #editProject(projectData) {
         const editProject = this.#projectManager.getProject(projectData.mode);
         editProject.title = projectData.title;
-
     }
 
     handleSelectProject(index) {
@@ -91,16 +91,20 @@ export default class Controller {
         if (projectData.mode === '') {
             this.#projectManager.createProject(projectData.title);
             this.#view.createProject(projectData.title, this.#projectManager.projects.length - 1);
-        }
-        else {
+        } else {
             this.#editProject(projectData);
             this.#view.editProject(projectData);
         }
     }
 
-    handleEditProjectDialog(index){
+    handleEditProjectDialog(index) {
         this.#view.populateProjectDialog(this.#projectManager.getProject(index), index);
         this.#view.showProjectDialog();
+    }
+
+    handleDeleteProject(index) {
+        this.#projectManager.deleteProject(index);
+        this.#view.deleteProject(index);
     }
 
     handleTaskSubmit(taskData) {
