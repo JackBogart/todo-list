@@ -209,7 +209,7 @@ export default class View {
         this.#taskDate.value = formatISO(task.dueDate, { representation: 'date' });
     }
 
-    populateProjectDialog(project, index){
+    populateProjectDialog(project, index) {
         this.#projectMode.value = String(index);
         this.#projectTitle.value = project.title;
     }
@@ -217,17 +217,16 @@ export default class View {
     // Project element functions
     createProject(title, index) {
         const projectEle = document.createElement('li');
+        projectEle.classList.add('project');
+        projectEle.dataset.index = index;
 
         const projectBtn = document.createElement('button');
         projectBtn.type = 'button';
-        projectBtn.classList.add('project');
-        projectBtn.dataset.index = index;
-
-        const projectTitle = document.createElement('div')
-        projectTitle.textContent = title;
+        projectBtn.textContent = title;
+        projectBtn.classList.add('project-btn');
 
         const projectControls = document.createElement('div');
-        projectControls.classList.add('project-controls')
+        projectControls.classList.add('project-controls');
 
         const editBtn = document.createElement('button');
         editBtn.classList.add('clickable-btn', 'edit');
@@ -237,9 +236,8 @@ export default class View {
 
         projectControls.appendChild(editBtn);
         projectControls.appendChild(deleteBtn);
-        
-        projectBtn.append(projectTitle);
-        projectBtn.appendChild(projectControls);
+
+        projectEle.appendChild(projectControls);
         projectEle.appendChild(projectBtn);
         document.querySelector('.sidebar > ul').appendChild(projectEle);
     }
@@ -261,10 +259,10 @@ export default class View {
 
     editProject(project) {
         const projectEle = this.#sidebar.querySelector(`.project[data-index="${project.mode}"]`);
-        const projectTitle = projectEle.querySelector('div');
+        const projectTitle = projectEle.querySelector('.project-btn');
         projectTitle.textContent = project.title;
 
-        if(projectEle.classList.contains('active')){
+        if (projectEle.classList.contains('active')) {
             this.#projectName.textContent = project.title;
         }
     }
@@ -296,7 +294,7 @@ export default class View {
     // Binders for events to handlers in controller
     bindSelectProject(handler) {
         this.#sidebar.addEventListener('click', (event) => {
-            if (event.target.classList.contains('project')) {
+            if (event.target.classList.contains('project-btn')) {
                 const index = parseInt(event.target.closest('.project').dataset.index);
 
                 handler(index);
