@@ -156,10 +156,23 @@ export default class View {
         this.#tasks.appendChild(taskElement);
     }
 
+    #createAndAddTodayTasks(task, projectIndex, index) {
+        const taskElement = this.#createTask(task);
+
+        taskElement.dataset.projectIndex = projectIndex;
+        taskElement.dataset.index = index;
+        this.#tasks.appendChild(taskElement);
+    }
+
     deleteTask(index) {
         const task = this.#tasks.querySelector(`.task[data-index="${index}"]`);
         this.#tasks.removeChild(task);
         this.#updateTasksIndices();
+    }
+
+    deleteTodayTask(projectIndex, index) {
+        const task = this.#tasks.querySelector(`.task[data-project-index="${projectIndex}"][data-index="${index}"]`);
+        this.#tasks.removeChild(task);
     }
 
     editTask(task) {
@@ -252,10 +265,12 @@ export default class View {
         document.querySelector('.sidebar > ul').appendChild(projectEle);
     }
 
-    getToday(tasks) {
+    getToday(projects) {
         this.#tasks.replaceChildren();
-        for (let i = 0; i < tasks.length; i++) {
-            this.createAndAddTask(tasks[i], i);
+        for (let i = 0; i < projects.length; i++) {
+            for (let j = 0; j < projects[i].length; j++) {
+                this.#createAndAddTodayTasks(projects[i][j], i, j);
+            }
         }
         this.#projectName.textContent = 'Today';
         this.#addTaskBtn.classList.add('hide-task-btn');
@@ -300,9 +315,9 @@ export default class View {
         if (activeProject === projectEle) {
             this.#projectName.textContent = '';
             this.#addTaskBtn.classList.add('hide-task-btn');
+            this.#tasks.replaceChildren();
         }
         projectEle.remove();
-        this.#tasks.replaceChildren();
         this.#updateProjectIndices();
     }
 
@@ -375,12 +390,18 @@ export default class View {
         });
     }
 
-    bindDeleteTask(handler) {
+    bindDeleteTask(handler, todayHandler) {
         this.#tasks.addEventListener('click', (event) => {
             if (event.target.classList.contains('delete')) {
                 const index = parseInt(event.target.closest('.task').dataset.index);
+                const activeProject = document.querySelector('.active');
 
-                handler(index);
+                if (!activeProject.classList.contains('today')) {
+                    handler(index);
+                } else {
+                    const projectIndex = parseInt(event.target.closest('.task').dataset.projectIndex);
+                    todayHandler(projectIndex, index);
+                }
             }
         });
     }

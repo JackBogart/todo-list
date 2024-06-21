@@ -16,7 +16,7 @@ export default class Controller {
         this.#todayProjects = [];
 
         this.#view.bindSelectProject(this.handleSelectProject.bind(this));
-        this.#view.bindDeleteTask(this.handleDeleteTask.bind(this));
+        this.#view.bindDeleteTask(this.handleDeleteTask.bind(this), this.handleDeleteTodayTask.bind(this));
         this.#view.bindOpenTaskDialog(this.handleOpenTaskDialog.bind(this));
         this.#view.bindCloseTaskDialog(this.handleCloseTaskDialog.bind(this));
         this.#view.bindTaskSubmit(this.handleTaskSubmit.bind(this));
@@ -51,11 +51,13 @@ export default class Controller {
             const currDate = formatISO(Date.now(), { representation: 'date' });
             this.#todayProjects = [];
             for (const project of this.#projectManager.projects) {
+                const todayProjectTasks = [];
                 for (const task of project.tasks) {
                     if (formatISO(task.dueDate, { representation: 'date' }) == currDate) {
-                        this.#todayProjects.push(task);
+                        todayProjectTasks.push(task);
                     }
                 }
+                this.#todayProjects.push(todayProjectTasks);
             }
             this.#view.getToday(this.#todayProjects);
         } else {
@@ -151,5 +153,11 @@ export default class Controller {
     handleToggleCompleteMarker(index) {
         this.#currProject.getTask(index).toggleCompleted();
         this.#view.toggleTaskCompleteMarker(index);
+    }
+
+    handleDeleteTodayTask(projectIndex, index) {
+        this.#projectManager.getProject(projectIndex).deleteTask(index);
+        this.#view.deleteTodayTask(projectIndex, index);
+        this.#selectProject(-1);
     }
 }
