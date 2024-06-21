@@ -21,6 +21,7 @@ export default class View {
     #closeProjectBtn;
     #projectMode;
     #projectName;
+    #projectIndex;
 
     constructor() {
         this.#sidebar = document.querySelector('.sidebar');
@@ -42,6 +43,7 @@ export default class View {
         this.#closeProjectBtn = document.querySelector('.project-cancel');
         this.#projectMode = document.querySelector('#project-mode');
         this.#projectName = document.querySelector('.project-name');
+        this.#projectIndex = document.querySelector('#project-index');
     }
 
     // Task element functions
@@ -170,11 +172,6 @@ export default class View {
         this.#updateTasksIndices();
     }
 
-    deleteTodayTask(projectIndex, index) {
-        const task = this.#tasks.querySelector(`.task[data-project-index="${projectIndex}"][data-index="${index}"]`);
-        this.#tasks.removeChild(task);
-    }
-
     editTask(task) {
         const taskEle = this.#tasks.querySelector(`.task[data-index="${task.mode}"]`);
         const taskTitle = taskEle.querySelector('.title');
@@ -224,12 +221,33 @@ export default class View {
         }
     }
 
+    toggleTaskCompleteMarkerToday(projectIndex, index) {
+        const taskEle = this.#tasks.querySelector(`.task[data-project-index="${projectIndex}"][data-index="${index}"]`);
+        const taskCompleteMarker =
+            taskEle.querySelector('.unchecked') === null
+                ? taskEle.querySelector('.checked')
+                : taskEle.querySelector('.unchecked');
+
+        if (taskCompleteMarker.classList.contains('unchecked')) {
+            taskCompleteMarker.classList.remove('unchecked');
+            taskCompleteMarker.classList.add('checked');
+        } else {
+            taskCompleteMarker.classList.remove('checked');
+            taskCompleteMarker.classList.add('unchecked');
+        }
+    }
+
     populateTaskDialog(task, index) {
         this.#taskMode.value = String(index);
         this.#taskTitle.value = task.title;
         this.#taskDesc.value = task.desc;
         this.#taskPriority.value = task.priority;
         this.#taskDate.value = formatISO(task.dueDate, { representation: 'date' });
+    }
+
+    populateTodayTaskDialog(task, projectIndex, index) {
+        this.populateTaskDialog(task, index);
+        this.#projectIndex.value = String(projectIndex);
     }
 
     populateProjectDialog(project, index) {
@@ -318,6 +336,9 @@ export default class View {
     showTaskDialog() {
         const activeProject = document.querySelector('.active');
         if (activeProject !== null) {
+            if (this.#taskDate.value === '') {
+                this.#taskDate.value = formatISO(Date.now(), { representation: 'date' });
+            }
             this.#taskDialog.showModal();
         }
     }
@@ -360,9 +381,11 @@ export default class View {
     bindEditTaskDialog(handler) {
         this.#tasks.addEventListener('click', (event) => {
             if (event.target.classList.contains('edit')) {
-                const index = parseInt(event.target.closest('.task').dataset.index);
+                const taskEle = event.target.closest('.task');
+                const index = parseInt(taskEle.dataset.index);
+                const projectIndex = taskEle.dataset.projectIndex ? parseInt(taskEle.dataset.projectIndex) : null;
 
-                handler(index);
+                handler(projectIndex, index);
             }
         });
     }
@@ -379,6 +402,7 @@ export default class View {
                 description: this.#taskDesc.value,
                 priority: this.#taskPriority.value,
                 dueDate: this.#taskDate.value,
+                projectIndex: this.#projectIndex.value,
             };
             handler(taskData);
         });
@@ -410,12 +434,18 @@ export default class View {
         });
     }
 
-    bindToggleTaskCompleteMarker(handler) {
+    bindToggleTaskCompleteMarker(handler, todayHandler) {
         this.#tasks.addEventListener('click', (event) => {
             if (event.target.classList.contains('unchecked') || event.target.classList.contains('checked')) {
                 const index = parseInt(event.target.closest('.task').dataset.index);
+                const activeProject = document.querySelector('.active');
 
-                handler(index);
+                if (!activeProject.classList.contains('today')) {
+                    handler(index);
+                } else {
+                    const projectIndex = parseInt(event.target.closest('.task').dataset.projectIndex);
+                    todayHandler(projectIndex, index);
+                }
             }
         });
     }

@@ -269,6 +269,7 @@ button {
 }
 
 #task-mode,
+#project-index,
 #project-mode {
     display: none;
 }

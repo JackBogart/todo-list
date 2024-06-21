@@ -22,7 +22,10 @@ export default class Controller {
         this.#view.bindTaskSubmit(this.handleTaskSubmit.bind(this));
         this.#view.bindEditTaskDialog(this.handleEditTaskDialog.bind(this));
         this.#view.bindToggleTaskDetails(this.handleToggleTaskDetails.bind(this));
-        this.#view.bindToggleTaskCompleteMarker(this.handleToggleCompleteMarker.bind(this));
+        this.#view.bindToggleTaskCompleteMarker(
+            this.handleToggleCompleteMarker.bind(this),
+            this.handleToggleCompleteMarkerToday.bind(this)
+        );
         this.#view.bindOpenProjectDialog(this.handleOpenProjectDialog.bind(this));
         this.#view.bindCloseProjectDialog(this.handleCloseProjectDialog.bind(this));
         this.#view.bindProjectSubmit(this.handleProjectSubmit.bind(this));
@@ -75,6 +78,14 @@ export default class Controller {
         editTask.dueDate = taskData.dueDate;
     }
 
+    #editTodayTask(taskData) {
+        const editTask = this.#projectManager.getProject(taskData.projectIndex).getTask(taskData.mode);
+        editTask.title = taskData.title;
+        editTask.desc = taskData.description;
+        editTask.priority = taskData.priority;
+        editTask.dueDate = taskData.dueDate;
+    }
+
     #editProject(projectData) {
         const editProject = this.#projectManager.getProject(projectData.mode);
         editProject.title = projectData.title;
@@ -89,8 +100,16 @@ export default class Controller {
         this.#view.showTaskDialog();
     }
 
-    handleEditTaskDialog(index) {
-        this.#view.populateTaskDialog(this.#currProject.getTask(index), index);
+    handleEditTaskDialog(projectIndex, index) {
+        if (projectIndex === null) {
+            this.#view.populateTaskDialog(this.#currProject.getTask(index), index);
+        } else {
+            this.#view.populateTodayTaskDialog(
+                this.#projectManager.getProject(projectIndex).getTask(index),
+                projectIndex,
+                index
+            );
+        }
         this.#view.showTaskDialog();
     }
 
@@ -140,9 +159,12 @@ export default class Controller {
                 taskData.dueDate
             );
             this.#view.createAndAddTask(newTask, this.#currProject.tasks.length - 1);
-        } else {
+        } else if (taskData.projectIndex === '') {
             this.#editTask(taskData);
             this.#view.editTask(taskData);
+        } else {
+            this.#editTodayTask(taskData);
+            this.#selectProject(-1);
         }
     }
 
@@ -162,7 +184,11 @@ export default class Controller {
 
     handleDeleteTodayTask(projectIndex, index) {
         this.#projectManager.getProject(projectIndex).deleteTask(index);
-        this.#view.deleteTodayTask(projectIndex, index);
         this.#selectProject(-1);
+    }
+
+    handleToggleCompleteMarkerToday(projectIndex, index) {
+        this.#projectManager.getProject(projectIndex).getTask(index).toggleCompleted();
+        this.#view.toggleTaskCompleteMarkerToday(projectIndex, index);
     }
 }
