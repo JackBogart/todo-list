@@ -243,6 +243,7 @@ export default class View {
         this.#taskDesc.value = task.desc;
         this.#taskPriority.value = task.priority;
         this.#taskDate.value = formatISO(task.dueDate, { representation: 'date' });
+        this.#projectIndex.value = '';
     }
 
     populateTodayTaskDialog(task, projectIndex, index) {
@@ -404,6 +405,7 @@ export default class View {
                 dueDate: this.#taskDate.value,
                 projectIndex: this.#projectIndex.value,
             };
+
             handler(taskData);
         });
     }

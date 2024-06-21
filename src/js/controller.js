@@ -39,9 +39,9 @@ export default class Controller {
 
     #init() {
         this.#view.init();
-        this.#createProject('default');
+        this.#createProject('TODO');
         this.#currProject.createAndAddTask('Hello world', 'Example desc', 'low', '2024-06-21');
-        this.#selectProject(-1);
+        this.#selectProject(0);
     }
 
     #createProject(title) {
@@ -70,20 +70,11 @@ export default class Controller {
         }
     }
 
-    #editTask(taskData) {
-        const editTask = this.#currProject.getTask(taskData.mode);
-        editTask.title = taskData.title;
-        editTask.desc = taskData.description;
-        editTask.priority = taskData.priority;
-        editTask.dueDate = taskData.dueDate;
-    }
-
-    #editTodayTask(taskData) {
-        const editTask = this.#projectManager.getProject(taskData.projectIndex).getTask(taskData.mode);
-        editTask.title = taskData.title;
-        editTask.desc = taskData.description;
-        editTask.priority = taskData.priority;
-        editTask.dueDate = taskData.dueDate;
+    #editTask(taskData, taskElement) {
+        taskElement.title = taskData.title;
+        taskElement.desc = taskData.description;
+        taskElement.priority = taskData.priority;
+        taskElement.dueDate = taskData.dueDate;
     }
 
     #editProject(projectData) {
@@ -160,10 +151,12 @@ export default class Controller {
             );
             this.#view.createAndAddTask(newTask, this.#currProject.tasks.length - 1);
         } else if (taskData.projectIndex === '') {
-            this.#editTask(taskData);
+            const taskElement = this.#currProject.getTask(taskData.mode);
+            this.#editTask(taskData, taskElement);
             this.#view.editTask(taskData);
         } else {
-            this.#editTodayTask(taskData);
+            const taskElement = this.#projectManager.getProject(taskData.projectIndex).getTask(taskData.mode);
+            this.#editTask(taskData, taskElement);
             this.#selectProject(-1);
         }
     }
