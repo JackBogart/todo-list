@@ -37,8 +37,8 @@ export default class Controller {
     #init() {
         this.#view.init();
         this.#createProject('default');
-        this.#currProject.createAndAddTask('Hello world', 'Example desc', 'low', '2024-06-22');
-        this.#selectProject(0);
+        this.#currProject.createAndAddTask('Hello world', 'Example desc', 'low', '2024-06-21');
+        this.#selectProject(-1);
     }
 
     #createProject(title) {
@@ -59,6 +59,7 @@ export default class Controller {
                 }
                 this.#todayProjects.push(todayProjectTasks);
             }
+            this.#currProject = null;
             this.#view.getToday(this.#todayProjects);
         } else {
             this.#currProject = this.#projectManager.getProject(index);
@@ -122,7 +123,11 @@ export default class Controller {
     }
 
     handleDeleteProject(index) {
+        const deletedProject = this.#projectManager.getProject(index);
         this.#projectManager.deleteProject(index);
+        if (this.#currProject === deletedProject || this.#currProject === null) {
+            this.#selectProject(-1);
+        }
         this.#view.deleteProject(index);
     }
 

@@ -311,12 +311,6 @@ export default class View {
 
     deleteProject(index) {
         const projectEle = this.#sidebar.querySelector(`.project[data-index="${index}"]`);
-        const activeProject = document.querySelector('.active');
-        if (activeProject === projectEle) {
-            this.#projectName.textContent = '';
-            this.#addTaskBtn.classList.add('hide-task-btn');
-            this.#tasks.replaceChildren();
-        }
         projectEle.remove();
         this.#updateProjectIndices();
     }
