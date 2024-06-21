@@ -252,6 +252,22 @@ export default class View {
         document.querySelector('.sidebar > ul').appendChild(projectEle);
     }
 
+    getToday(tasks) {
+        this.#tasks.replaceChildren();
+        for (let i = 0; i < tasks.length; i++) {
+            this.createAndAddTask(tasks[i], i);
+        }
+        this.#projectName.textContent = 'Today';
+        this.#addTaskBtn.classList.add('hide-task-btn');
+
+        const activeProject = document.querySelector('.active');
+        if (activeProject !== null) {
+            activeProject.classList.remove('active');
+        }
+        const projectTab = document.querySelector(`.project[data-index="-1"]`);
+        projectTab.classList.add('active');
+    }
+
     getProject(project, index) {
         this.#tasks.replaceChildren();
         for (let i = 0; i < project.tasks.length; i++) {

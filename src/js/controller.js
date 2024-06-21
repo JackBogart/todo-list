@@ -1,3 +1,5 @@
+import { formatISO } from 'date-fns';
+
 import ProjectManager from './projectManager';
 import View from './view';
 
@@ -5,11 +7,13 @@ export default class Controller {
     #currProject;
     #projectManager;
     #view;
+    #todayProjects;
 
     constructor() {
         this.#currProject = null;
         this.#projectManager = new ProjectManager();
         this.#view = new View();
+        this.#todayProjects = [];
 
         this.#view.bindSelectProject(this.handleSelectProject.bind(this));
         this.#view.bindDeleteTask(this.handleDeleteTask.bind(this));
@@ -43,8 +47,21 @@ export default class Controller {
     }
 
     #selectProject(index) {
-        this.#currProject = this.#projectManager.getProject(index);
-        this.#view.getProject(this.#currProject, index);
+        if (index === -1) {
+            const currDate = formatISO(Date.now(), { representation: 'date' });
+            this.#todayProjects = [];
+            for (const project of this.#projectManager.projects) {
+                for (const task of project.tasks) {
+                    if (formatISO(task.dueDate, { representation: 'date' }) == currDate) {
+                        this.#todayProjects.push(task);
+                    }
+                }
+            }
+            this.#view.getToday(this.#todayProjects);
+        } else {
+            this.#currProject = this.#projectManager.getProject(index);
+            this.#view.getProject(this.#currProject, index);
+        }
     }
 
     #editTask(taskData) {
