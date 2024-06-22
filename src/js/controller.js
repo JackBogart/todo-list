@@ -77,17 +77,6 @@ export default class Controller {
 
     #selectProject(index) {
         if (index === -1) {
-            const currDate = formatISO(Date.now(), { representation: 'date' });
-            this.#todayProjects = [];
-            for (const project of this.#projectManager.projects) {
-                const todayProjectTasks = [];
-                for (const task of project.tasks) {
-                    if (formatISO(task.dueDate, { representation: 'date' }) == currDate) {
-                        todayProjectTasks.push(task);
-                    }
-                }
-                this.#todayProjects.push(todayProjectTasks);
-            }
             this.#currProject = null;
             this.#view.getToday(this.#projectManager.projects);
         } else {

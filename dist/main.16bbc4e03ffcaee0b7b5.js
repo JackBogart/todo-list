@@ -4852,9 +4852,16 @@ class View {
   }
   getToday(projects) {
     this.#tasks.replaceChildren();
+    const currDate = formatISO(Date.now(), {
+      representation: 'date'
+    });
     for (let i = 0; i < projects.length; i++) {
-      for (let j = 0; j < projects[i].length; j++) {
-        this.#createAndAddTodayTasks(projects[i][j], i, j);
+      for (let j = 0; j < projects[i].tasks.length; j++) {
+        if (formatISO(projects[i].getTask(j).dueDate, {
+          representation: 'date'
+        }) == currDate) {
+          this.#createAndAddTodayTasks(projects[i].getTask(j), i, j);
+        }
       }
     }
     this.#projectName.textContent = 'Today';
@@ -5083,23 +5090,8 @@ class Controller {
   }
   #selectProject(index) {
     if (index === -1) {
-      const currDate = formatISO(Date.now(), {
-        representation: 'date'
-      });
-      this.#todayProjects = [];
-      for (const project of this.#projectManager.projects) {
-        const todayProjectTasks = [];
-        for (const task of project.tasks) {
-          if (formatISO(task.dueDate, {
-            representation: 'date'
-          }) == currDate) {
-            todayProjectTasks.push(task);
-          }
-        }
-        this.#todayProjects.push(todayProjectTasks);
-      }
       this.#currProject = null;
-      this.#view.getToday(this.#todayProjects);
+      this.#view.getToday(this.#projectManager.projects);
     } else {
       this.#currProject = this.#projectManager.getProject(index);
       this.#view.getProject(this.#currProject, index);
@@ -5214,4 +5206,4 @@ const app = new Controller();
 app.run();
 /******/ })()
 ;
-//# sourceMappingURL=main.b45a789eacc3ca657c24.js.map
+//# sourceMappingURL=main.16bbc4e03ffcaee0b7b5.js.map
