@@ -9,12 +9,12 @@ export default class Task {
     #dueDate;
     #completed;
 
-    constructor(title, desc, priority, dueDate) {
+    constructor(title, desc, priority, dueDate, completed = false) {
         this.title = title;
         this.desc = desc;
         this.priority = priority;
         this.dueDate = dueDate;
-        this.#completed = false;
+        this.#completed = completed;
     }
 
     get title() {
@@ -67,5 +67,19 @@ export default class Task {
     getLocalDueDate() {
         const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         return formatInTimeZone(this.dueDate, timeZone, 'MMM dd, yyyy');
+    }
+
+    toJSON() {
+        return {
+            title: this.#title,
+            desc: this.#desc,
+            priority: this.priority,
+            dueDate: this.dueDate,
+            completed: this.#completed,
+        };
+    }
+
+    static fromJSON(taskData) {
+        return new Task(taskData.title, taskData.desc, taskData.priority, taskData.dueDate, taskData.completed);
     }
 }

@@ -60,6 +60,12 @@ export default class View {
         return taskElement;
     }
 
+    init() {
+        document.querySelector('.header-date').textContent = this.#formatDateString(Date.now());
+
+        this.#taskDate.setAttribute('min', formatISO(Date.now(), { representation: 'date' }));
+    }
+
     #createTaskMinimized(task) {
         const taskMinimized = document.createElement('div');
         taskMinimized.classList.add('task-min');
@@ -143,12 +149,6 @@ export default class View {
 
     #formatDateString(date) {
         return formatInTimeZone(date, this.#timeZone, 'MMM dd, yyyy');
-    }
-
-    init() {
-        document.querySelector('.header-date').textContent = this.#formatDateString(Date.now());
-
-        this.#taskDate.setAttribute('min', formatISO(Date.now(), { representation: 'date' }));
     }
 
     createAndAddTask(task, index) {

@@ -34,14 +34,40 @@ export default class Controller {
     }
 
     run() {
-        this.#init();
-    }
-
-    #init() {
         this.#view.init();
-        this.#createProject('TODO');
-        this.#currProject.createAndAddTask('Hello world', 'Example desc', 'low', '2024-06-21');
-        this.#selectProject(0);
+        if (this.#projectManager.projects.length !== 0) {
+            // Returning user, load their data
+            for (let i = 0; i < this.#projectManager.projects.length; i++) {
+                const currentlyLoadingProject = this.#projectManager.getProject(i);
+                this.#view.createProject(currentlyLoadingProject.title, i);
+                for (let j = 0; j < currentlyLoadingProject.tasks.length; j++) {
+                    this.#view.createAndAddTask(currentlyLoadingProject.getTask(j), j);
+                }
+            }
+        } else {
+            // First time user -- yay!
+            this.#createProject('TODO');
+            this.#currProject.createAndAddTask(
+                'Welcome!',
+                'To get started try selecting the default todo list provided on the left. Once selected a button will appear on the page that you can use to create your own custom tasks for that list!',
+                'low',
+                formatISO(Date.now(), { representation: 'date' })
+            );
+            this.#currProject.createAndAddTask(
+                'Complete your first task!',
+                "Once you've finished your first task you can click the checkbox next to a task to mark it as complete. A completed task will not be deleted unless you opt to.",
+                'high',
+                '2030-01-01'
+            );
+            this.#currProject.createAndAddTask(
+                'Editing tasks',
+                "Made a spelling error? Try clicking the pencil icon, if everyone was perfect we wouldn't need erasers.",
+                'medium',
+                '2030-01-01'
+            );
+        }
+        this.#selectProject(-1);
+        this.#projectManager.saveToLocal();
     }
 
     #createProject(title) {
@@ -119,12 +145,12 @@ export default class Controller {
 
     handleProjectSubmit(projectData) {
         if (projectData.mode === '') {
-            this.#projectManager.createProject(projectData.title);
-            this.#view.createProject(projectData.title, this.#projectManager.projects.length - 1);
+            this.#createProject(projectData.title);
         } else {
             this.#editProject(projectData);
             this.#view.editProject(projectData);
         }
+        this.#projectManager.saveToLocal();
     }
 
     handleEditProjectDialog(index) {
@@ -139,6 +165,7 @@ export default class Controller {
             this.#selectProject(-1);
         }
         this.#view.deleteProject(index);
+        this.#projectManager.saveToLocal();
     }
 
     handleTaskSubmit(taskData) {
@@ -159,10 +186,12 @@ export default class Controller {
             this.#editTask(taskData, taskElement);
             this.#selectProject(-1);
         }
+        this.#projectManager.saveToLocal();
     }
 
     handleDeleteTask(index) {
         this.#currProject.deleteTask(index);
+        this.#projectManager.saveToLocal();
         this.#view.deleteTask(index);
     }
 
@@ -172,16 +201,19 @@ export default class Controller {
 
     handleToggleCompleteMarker(index) {
         this.#currProject.getTask(index).toggleCompleted();
+        this.#projectManager.saveToLocal();
         this.#view.toggleTaskCompleteMarker(index);
     }
 
     handleDeleteTodayTask(projectIndex, index) {
         this.#projectManager.getProject(projectIndex).deleteTask(index);
+        this.#projectManager.saveToLocal();
         this.#selectProject(-1);
     }
 
     handleToggleCompleteMarkerToday(projectIndex, index) {
         this.#projectManager.getProject(projectIndex).getTask(index).toggleCompleted();
+        this.#projectManager.saveToLocal();
         this.#view.toggleTaskCompleteMarkerToday(projectIndex, index);
     }
 }
