@@ -7,7 +7,12 @@ export default class Project {
     constructor(title) {
         this.title = title;
         this.#tasks = [];
+        // this.#init();
     }
+
+    // #init(){
+    //     //create tasks
+    // }
 
     get title() {
         return this.#title;
@@ -41,5 +46,18 @@ export default class Project {
 
     getTask(index) {
         return this.#tasks[index];
+    }
+
+    toJSON() {
+        return {
+            title: this.#title,
+            tasks: this.#tasks.map((task) => task.toJSON()),
+        };
+    }
+
+    static fromJSON(projectData) {
+        const project = new Project(projectData.title);
+        project.#tasks = projectData.tasks.map((taskData) => Task.fromJSON(taskData));
+        return project;
     }
 }
