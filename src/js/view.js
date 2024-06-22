@@ -286,9 +286,13 @@ export default class View {
 
     getToday(projects) {
         this.#tasks.replaceChildren();
+
+        const currDate = formatISO(Date.now(), { representation: 'date' });
         for (let i = 0; i < projects.length; i++) {
-            for (let j = 0; j < projects[i].length; j++) {
-                this.#createAndAddTodayTasks(projects[i][j], i, j);
+            for (let j = 0; j < projects[i].tasks.length; j++) {
+                if (formatISO(projects[i].getTask(j).dueDate, { representation: 'date' }) == currDate) {
+                    this.#createAndAddTodayTasks(projects[i].getTask(j), i, j);
+                }
             }
         }
         this.#projectName.textContent = 'Today';

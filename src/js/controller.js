@@ -89,7 +89,7 @@ export default class Controller {
                 this.#todayProjects.push(todayProjectTasks);
             }
             this.#currProject = null;
-            this.#view.getToday(this.#todayProjects);
+            this.#view.getToday(this.#projectManager.projects);
         } else {
             this.#currProject = this.#projectManager.getProject(index);
             this.#view.getProject(this.#currProject, index);
