@@ -335,6 +335,7 @@ dialog {
 .today {
     position: relative;
 }
+
 .today::before {
     content: ' ';
     position: absolute;
@@ -343,4 +344,5 @@ dialog {
     height: 24px;
     top: 20px;
     left: 10px;
+    pointer-events: none;
 }
