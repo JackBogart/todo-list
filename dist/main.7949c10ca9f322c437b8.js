@@ -4532,13 +4532,7 @@ class Project {
   constructor(title) {
     this.title = title;
     this.#tasks = [];
-    // this.#init();
   }
-
-  // #init(){
-  //     //create tasks
-  // }
-
   get title() {
     return this.#title;
   }
@@ -4836,8 +4830,9 @@ class View {
     projectEle.dataset.index = index;
     const projectBtn = document.createElement('button');
     projectBtn.type = 'button';
-    projectBtn.textContent = title;
     projectBtn.classList.add('project-btn');
+    const projectTitle = document.createElement('span');
+    projectTitle.textContent = title;
     const projectControls = document.createElement('div');
     projectControls.classList.add('project-controls');
     const editBtn = document.createElement('button');
@@ -4846,7 +4841,8 @@ class View {
     deleteBtn.classList.add('clickable-btn', 'delete');
     projectControls.appendChild(editBtn);
     projectControls.appendChild(deleteBtn);
-    projectEle.appendChild(projectControls);
+    projectBtn.appendChild(projectTitle);
+    projectBtn.appendChild(projectControls);
     projectEle.appendChild(projectBtn);
     document.querySelector('.sidebar > ul').appendChild(projectEle);
   }
@@ -5041,12 +5037,10 @@ class Controller {
   #currProject;
   #projectManager;
   #view;
-  #todayProjects;
   constructor() {
     this.#currProject = null;
     this.#projectManager = new ProjectManager();
     this.#view = new View();
-    this.#todayProjects = [];
     this.#view.bindSelectProject(this.handleSelectProject.bind(this));
     this.#view.bindDeleteTask(this.handleDeleteTask.bind(this), this.handleDeleteTodayTask.bind(this));
     this.#view.bindOpenTaskDialog(this.handleOpenTaskDialog.bind(this));
@@ -5194,11 +5188,6 @@ class Controller {
   }
 }
 ;// CONCATENATED MODULE: ./src/js/index.js
-// import { formatInTimeZone } from 'date-fns-tz';
-
-// import ProjectManager from './projectManager';
-// import View from './view';
-
 
 
 
@@ -5206,4 +5195,4 @@ const app = new Controller();
 app.run();
 /******/ })()
 ;
-//# sourceMappingURL=main.16bbc4e03ffcaee0b7b5.js.map
+//# sourceMappingURL=main.7949c10ca9f322c437b8.js.map

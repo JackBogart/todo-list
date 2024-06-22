@@ -7,13 +7,11 @@ export default class Controller {
     #currProject;
     #projectManager;
     #view;
-    #todayProjects;
 
     constructor() {
         this.#currProject = null;
         this.#projectManager = new ProjectManager();
         this.#view = new View();
-        this.#todayProjects = [];
 
         this.#view.bindSelectProject(this.handleSelectProject.bind(this));
         this.#view.bindDeleteTask(this.handleDeleteTask.bind(this), this.handleDeleteTodayTask.bind(this));

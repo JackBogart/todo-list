@@ -264,8 +264,10 @@ export default class View {
 
         const projectBtn = document.createElement('button');
         projectBtn.type = 'button';
-        projectBtn.textContent = title;
         projectBtn.classList.add('project-btn');
+
+        const projectTitle = document.createElement('span');
+        projectTitle.textContent = title;
 
         const projectControls = document.createElement('div');
         projectControls.classList.add('project-controls');
@@ -279,7 +281,8 @@ export default class View {
         projectControls.appendChild(editBtn);
         projectControls.appendChild(deleteBtn);
 
-        projectEle.appendChild(projectControls);
+        projectBtn.appendChild(projectTitle);
+        projectBtn.appendChild(projectControls);
         projectEle.appendChild(projectBtn);
         document.querySelector('.sidebar > ul').appendChild(projectEle);
     }

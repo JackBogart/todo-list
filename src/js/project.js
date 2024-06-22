@@ -7,12 +7,7 @@ export default class Project {
     constructor(title) {
         this.title = title;
         this.#tasks = [];
-        // this.#init();
     }
-
-    // #init(){
-    //     //create tasks
-    // }
 
     get title() {
         return this.#title;

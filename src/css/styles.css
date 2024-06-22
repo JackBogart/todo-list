@@ -17,7 +17,7 @@ body {
 }
 body {
     display: grid;
-    grid-template: 75px 1fr / 1fr 4fr;
+    grid-template: 75px 1fr / 1fr 5fr;
     grid-template-areas:
         'header header'
         'sidebar main-content';
@@ -50,29 +50,40 @@ ul {
 }
 
 .project {
-    position: relative;
     border: none;
+    display: flex;
+    justify-content: start;
 }
 
 button {
     cursor: pointer;
 }
 
-.project > button {
+.project-btn {
+    position: relative;
     background-color: transparent;
     border: none;
     font-size: 1.3rem;
     appearance: none;
-    padding: 20px 70px 20px 40px;
-    width: 100%;
-    text-align: left;
+    padding: 10px 100px 10px 10px;
+    margin: 10px 10px 0px 10px;
+    border-radius: 10px;
 }
 
-.project:not(:active):hover {
+.today > .project-btn {
+    padding: 10px 50px 10px 10px;
+}
+
+.project-btn > span {
+    pointer-events: none;
+    word-break: break-word;
+}
+
+.project-btn:not(:active):hover {
     background-color: var(--dark-grey);
 }
 
-.project.active {
+.project.active > .project-btn {
     background-color: var(--dark-grey);
 }
 
@@ -90,7 +101,7 @@ button {
     display: none;
     gap: 10px;
     right: 10px;
-    top: 30%;
+    top: 25%;
     z-index: 1;
 }
 
@@ -336,13 +347,13 @@ dialog {
     position: relative;
 }
 
-.today::before {
+.today > button::before {
     content: ' ';
     position: absolute;
     background: url('../img/today.svg') no-repeat center center;
     width: 24px;
     height: 24px;
-    top: 20px;
-    left: 10px;
+    top: 25%;
+    right: 10px;
     pointer-events: none;
 }
