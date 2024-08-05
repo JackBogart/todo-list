@@ -1,6 +1,6 @@
 import { formatISO } from 'date-fns';
 
-import ProjectManager from './projectManager';
+import ProjectManager from './project-manager';
 import View from './view';
 
 export default class Controller {
